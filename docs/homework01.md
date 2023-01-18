@@ -30,6 +30,40 @@ Run docker with the python:3.9 image in an interactive mode and the entrypoint o
 * 3
 * 7
 
+Ans: To run the python:3.9 image in interactive mode with the entrypoint of bash, you can use the following command:
+
+```sh
+docker run -it --entrypoint bash python:3.9
+```
+
+Once you're inside the container, you can use the pip list command to check the installed python packages/modules. The number of packages/modules will be listed at the bottom of the output.
+
+```
+Unable to find image 'python:3.9' locally
+3.9: Pulling from library/python
+bbeef03cda1f: Pull complete 
+f049f75f014e: Pull complete 
+56261d0e6b05: Pull complete 
+9bd150679dbd: Pull complete 
+5b282ee9da04: Pull complete 
+03f027d5e312: Pull complete 
+3c8304b923fa: Pull complete 
+1f510f0937ac: Pull complete 
+cb0f5bf32016: Pull complete 
+Digest: sha256:4b7ee97f021e0d1f5749ea3ad6d1bae1ca15a9b42cdebcf40269502d54f56666
+Status: Downloaded newer image for python:3.9
+root@28521a416664:/# pip list
+Package    Version
+---------- -------
+pip        22.0.4
+setuptools 58.1.0
+wheel      0.38.4
+WARNING: You are using pip version 22.0.4; however, version 22.3.1 is available.
+You should consider upgrading via the '/usr/local/bin/python -m pip install --upgrade pip' command.
+```
+
+We have 3 packages installed (pip, setuptools, wheel).
+
 ## Preparing Postgres
 
 Run Postgres and load data as shown in the videos We'll use the green taxi trips from January 2019:
@@ -54,6 +88,31 @@ Remember that lpep_pickup_datetime and lpep_dropoff_datetime columns are in the 
 * 20530
 * 17630
 * 21090
+
+Ans: To get started with postgres, let us make a directory named `ny-trip-postgres` to store our data.
+
+```
+mkdir ny-trip-postgres/
+echo "ny-trip-postgres/" >> .gitignore
+```
+
+Next, we run the postgres image interactively in docker.
+
+```sh
+docker run -it \
+    -e POSTGRES_USER="root" \
+    -e POSTGRES_PASSWORD="root" \
+    -e POSTGRES_DB="ny_taxi" \
+    -v $(pwd)/ny-trip-postgres:/var/lib/postgresql/data \
+    -p 5432:5432 \
+    postgres:13
+```
+
+```sql
+SELECT COUNT(*) FROM trips
+WHERE date_trunc('day', lpep_pickup_datetime) = '2019-01-15'
+AND date_trunc('day', lpep_dropoff_datetime) = '2019-01-15';
+```
 
 ### Largest trip for each day
 Which was the day with the largest trip distance Use the pick up time for your calculations.
