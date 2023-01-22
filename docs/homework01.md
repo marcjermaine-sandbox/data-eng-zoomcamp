@@ -105,6 +105,12 @@ Which was the day with the largest trip distance Use the pick up time for your c
 * 2019-01-15
 * 2019-01-10
 
+```
+SELECT lpep_pickup_datetime, trip_distance FROM green_tripdata ORDER BY trip_distance DESC LIMIT 1;
+```
+
+2019-01-15 with trip_distance = 117.99
+
 ### Question 5. The number of passengers
 
 In 2019-01-01 how many trips had 2 and 3 passengers?
