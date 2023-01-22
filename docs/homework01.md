@@ -89,30 +89,13 @@ Remember that lpep_pickup_datetime and lpep_dropoff_datetime columns are in the 
 * 17630
 * 21090
 
-Ans: To get started with postgres, let us make a directory named `ny-trip-postgres` to store our data.
-
-```
-mkdir ny-trip-postgres/
-echo "ny-trip-postgres/" >> .gitignore
-```
-
-Next, we run the postgres image interactively in docker.
-
-```sh
-docker run -it \
-    -e POSTGRES_USER="root" \
-    -e POSTGRES_PASSWORD="root" \
-    -e POSTGRES_DB="ny_taxi" \
-    -v $(pwd)/ny-trip-postgres:/var/lib/postgresql/data \
-    -p 5432:5432 \
-    postgres:13
-```
-
 ```sql
-SELECT COUNT(*) FROM trips
+SELECT COUNT(*) as COUNT_jan_15_2019 FROM green_tripdata
 WHERE date_trunc('day', lpep_pickup_datetime) = '2019-01-15'
 AND date_trunc('day', lpep_dropoff_datetime) = '2019-01-15';
 ```
+
+Executing the query, we have 20530 trips made on January 15.
 
 ### Largest trip for each day
 Which was the day with the largest trip distance Use the pick up time for your calculations.
@@ -130,6 +113,17 @@ In 2019-01-01 how many trips had 2 and 3 passengers?
 * 2: 1532 ; 3: 126
 * 2: 1282 ; 3: 254
 * 2: 1282 ; 3: 274
+
+```sql
+SELECT passenger_count, COUNT(*) as trip_count
+FROM trips
+WHERE date_trunc('day', tpep_pickup_datetime) = '2019-01-01'
+  AND passenger_count IN (2, 3)
+GROUP BY passenger_count
+```
+
+Ans: 
+* 2: 1282 ; 3: 254
 
 ### Question 6. Largest tip
 
